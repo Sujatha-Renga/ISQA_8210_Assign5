@@ -9,7 +9,11 @@
             <i class="fas fa-table me-1"></i>
 
             <a class="btn btn-success" href="{% url 'create_workorder' %}">Create Order</a>
-
+            {% if user.is_authenticated %}
+                <ul class="nav navbar-nav">
+                    <li><a href="{% url 'view_pdf' %}"> Generate PDF </a></li>
+                </ul>
+            {% endif %}
         </div>
         <div class="card-body">
             <table id="datatablesSimple" class="table">
@@ -43,9 +47,9 @@
                             <a class="btn btn-warning" href="{% url 'order_update' order.pk %}">Update Order</a>
                         </td>
                         {% if request.user.is_staff %}
-                        <td>
-                            <a class="btn btn-danger" href={% url 'order_delete' order.pk %}>Delete Order</a>
-                        </td>
+                            <td>
+                                <a class="btn btn-danger" href={% url 'order_delete' order.pk %}>Delete Order</a>
+                            </td>
                         {% endif %}
                     </tr>
                 {% endfor %}
