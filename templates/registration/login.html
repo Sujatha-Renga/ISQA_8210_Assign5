@@ -4,25 +4,39 @@
 {% block title %}Log In{% endblock title %}
 
 {% block content %}
-<h2>Log In</h2>
-    {%  if form.errors %}
-    <p>
-    Your username and password didn't match.
-    Please try again.
-    </p>
+    <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="d-flex justify-content-center">
+                <h3 id="form-title">LOGIN</h3>
+            </div>
+            {% if form.errors %}
+                <p>
+                    Your username and password didn't match.
+                    Please try again.
+                </p>
+            {% endif %}
+            {% if next %}
+                {% if user.is_authenticated %}
+                    <p>Your account doesn't have access to this page. To proceed,
+                        please login with an account that has access.</p>
+                {% else %}
+                    <p>Please login to see this page.</p>
+                {% endif %}
+            {% endif %}
 
-    {%  endif %}
-    <div class="login-form">
-     <form action="{%  url 'login' %}" method="post">
-         {{  form.as_p }}
-         {%  csrf_token %}
-         <input type="hidden" name="next" value="{{ next }}"/>
-         <p></p><input type="submit" value="Log-in">
-     </form>
+            <div class="d-flex justify-content-center form_container">
+                <form action="{% url 'login' %}" method="post">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}"/>
+                    <p></p><input type="submit" value="Log-in">
+                </form>
+            </div>
+            <div class="d-flex justify-content-center links">
+                <p><a href="{% url 'pw_reset' %}">Forgot password?</a></p>
+            </div>
+        </div>
     </div>
-
-
-<p><a href="{% url 'pw_reset' %}">Forgot password?</a></p>
 
 
 {% endblock content %}

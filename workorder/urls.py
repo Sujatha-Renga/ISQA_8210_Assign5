@@ -5,7 +5,7 @@ from workorder.views import WorkOrderList, CreateWorkOrder, UpdateWorkOrder, Wor
 
 urlpatterns = [
     path('create_workorder.html', CreateWorkOrder.as_view(), name='create_workorder'),
-    path('workorder_list.html', WorkOrderList.as_view(), name='workorder_list'),
+    path('workorder/', WorkOrderList.as_view(), name='workorder_list'),
     path('view/<int:pk>/', WorkOrderDetail.as_view(), name='order_detail'),
     path('edit/<int:pk>/', UpdateWorkOrder.as_view(), name='order_update'),
     path('delete/<int:pk>/', DeleteWorkOrder.as_view(), name='order_delete'),
@@ -14,5 +14,5 @@ urlpatterns = [
     path('item/delete/<int:pk>/', DeleteWorkOrderItems.as_view(), name='item_delete'),
     path('export_work_orders/', views.export_work_orders, name='export_work_orders'),
     path('export_filter_work/', views.export_filter_work, name='export_filter_work'),
-    path('export_work_order_items/', views.export_work_order_items, name='export_work_order_items'),
+    path('view_pdf', views.view_pdf, name='view_pdf')
 ]
