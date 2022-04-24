@@ -13,64 +13,88 @@
 </head>
 <body>
 <header>
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse"
-                    data-target="#myNavbar">
-                <span class="sr-only">Toggle Navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <!-- logo -->
-            <a class="navbar-brand" href="{% url 'home' %}">
-                Mercy Affordable Housing
-            </a>
-        </div>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#myNavbar">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- logo -->
+                <a class="navbar-brand" href="{% url 'home' %}">
+                    Mercy Affordable Housing
+                </a>
+            </div>
 
-        <div class="collapse navbar-collapse" id="myNavbar">
-            {% if user.is_authenticated %}
-                <ul class="nav navbar-nav">
-                    <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="{% url 'workorder_list' %}">WorkOrder</a></li>
-                </ul>
-            {% endif %}
-
-            <ul class="nav navbar-nav navbar-right">
+            <div class="collapse navbar-collapse" id="myNavbar">
                 {% if user.is_authenticated %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            Welcome ,{{ user.username }}<span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            {% if user.is_superuser %}
-                                <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin panel</a></li>
-                            {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                        </ul>
-                    </li>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-success">Log In</a>
+                    <ul class="nav navbar-nav">
+                        <li><a href="{% url 'home' %}">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Contact</a></li>
+                        {% if user.is_superuser %}
+                            <li><a href="{% url 'workorder_list' %}">WorkOrder</a></li>
+                        {% elif user.is_staff %}
+                            <li><a href="{% url 'workorder_list1' %}">WorkOrder</a></li>
+                        {% else %}
+                            <li><a href="{% url 'workorder_list2' %}">WorkOrder</a></li>
+                        {% endif %}
+                    </ul>
                 {% endif %}
-            </ul>
 
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                               aria-expanded="false">
+                                Welcome ,{{ user.username }}<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu" role="menu">
+                                {% if user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin panel</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'change_password' %}">Change Password</a></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-success">Log In</a>
+                    {% endif %}
+                </ul>
+
+            </div>
         </div>
-    </div>
-</nav>
-{% block content %}
-{% endblock %}
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+    </nav>
+    {% block content %}
+    {% endblock %}
+    {% block pagination %}
+        {% if is_paginated %}
+            <div class="pagination">
+            <span class="page-links">
+                {% if page_obj.has_previous %}
+                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="page-current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+                {% if page_obj.has_next %}
+                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+            </div>
+        {% endif %}
+    {% endblock pagination %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
 </body>
 </html>

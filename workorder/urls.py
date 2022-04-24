@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views
 from workorder.views import WorkOrderList, CreateWorkOrder, UpdateWorkOrder, WorkOrderDetail, DeleteWorkOrder, \
-    CreateWorkOrderItems, UpdateWorkOrderItems, DeleteWorkOrderItems
+    CreateWorkOrderItems, UpdateWorkOrderItems, DeleteWorkOrderItems, WorkOrderList1, WorkOrderList2
 
 urlpatterns = [
     path('create_workorder.html', CreateWorkOrder.as_view(), name='create_workorder'),
     path('workorder/', WorkOrderList.as_view(), name='workorder_list'),
+    path('workorder/list', WorkOrderList1.as_view(), name='workorder_list1'),
+    path('workorder/repair_list', WorkOrderList2.as_view(), name='workorder_list2'),
     path('view/<int:pk>/', WorkOrderDetail.as_view(), name='order_detail'),
     path('edit/<int:pk>/', UpdateWorkOrder.as_view(), name='order_update'),
     path('delete/<int:pk>/', DeleteWorkOrder.as_view(), name='order_delete'),

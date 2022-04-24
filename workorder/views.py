@@ -6,6 +6,8 @@ from workorder.forms import WorkOrderForm, ItemForm
 from workorder.models import WorkOrder, WorkOrderItem
 from django.db.models import Count
 from django.forms import ModelForm, DateInput
+from django.core.paginator import Paginator
+from django.shortcuts import render
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
@@ -19,6 +21,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 
 
+def homeView(request):
+    return render(request, 'home.html')
+
+
 class DateInput(DateInput):
     input_type = 'date'
 
@@ -30,6 +36,26 @@ class WorkOrderList(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(WorkOrderList, self).get_context_data(**kwargs)
         context["orders"] = WorkOrder.objects.all()
+        return context
+
+
+class WorkOrderList1(LoginRequiredMixin, ListView):
+    template_name = "workorder_list.html"
+    model = WorkOrder
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkOrderList1, self).get_context_data(**kwargs)
+        context["orders"] = WorkOrder.objects.filter(property__user=self.request.user)
+        return context
+
+
+class WorkOrderList2(LoginRequiredMixin, ListView):
+    template_name = "workorder_list.html"
+    model = WorkOrder
+
+    def get_context_data(self, **kwargs):
+        context = super(WorkOrderList2, self).get_context_data(**kwargs)
+        context["orders"] = WorkOrder.objects.filter(user__is_worker=True)
         return context
 
 
@@ -100,10 +126,7 @@ class DeleteWorkOrderItems(LoginRequiredMixin, DeleteView):
 class ExportFilterForms(forms.ModelForm):
     class Meta:
         model = WorkOrder
-        fields = ('status', 'user', 'property', 'completed_date')
-        widgets = {
-            'completed_date': DateInput(),
-        }
+        fields = ('status', 'user', 'property')
 
 
 @staff_member_required
@@ -120,21 +143,24 @@ def export_work_orders(request):
     if form.is_valid():
         cs_value = form.cleaned_data['status']
         assigned_user = form.cleaned_data['user']
-        assigned_property = form.cleaned_data['property']
-        assigned_completed_date = form.cleaned_data['completed_date']
+        assigned_apartment = form.cleaned_data['property']
+
     writer = csv.writer(response)
     writer.writerow(['ID', 'Title', 'Apartment Number', 'Description', 'Skill Set Required'
                         , 'Severity Level', 'Current Status', 'Desired Completion Date', 'Estimated Cost'
                         , 'Assigned Employee', 'Actual Completion Date', 'Actual Cost'])
-    if assigned_user and assigned_completed_date and assigned_property is None:
+    if assigned_user and assigned_apartment is None:
         wo_object = WorkOrder.objects.filter(status=cs_value)
-    else:
+    elif assigned_apartment is None:
         wo_object = WorkOrder.objects.filter(status=cs_value, user=assigned_user)
+    elif assigned_user is None:
+        wo_object = WorkOrder.objects.filter(status=cs_value, property=assigned_apartment)
+    else:
+        wo_object = WorkOrder.objects.filter(status=cs_value, user=assigned_user, property=assigned_apartment)
 
     for wo in wo_object.values_list('id', 'workorder_name', 'apartment__apt_num', 'short_desc', 'skill_set', 'severity',
-                                    'status'
-            , 'promised_date', 'estimated_cost', 'user__username'
-            , 'completed_date', 'actual_cost'):
+                                    'status', 'promised_date', 'estimated_cost', 'user__username', 'completed_date',
+                                    'actual_cost'):
         writer.writerow(wo)
 
     response['Content-Disposition'] = 'attachment; filename="workorders.csv"'
