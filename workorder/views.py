@@ -14,6 +14,8 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter
 import csv
+from django.core.paginator import Paginator, EmptyPage, \
+    PageNotAnInteger
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import WorkOrder, WorkOrderItem
@@ -32,11 +34,14 @@ class DateInput(DateInput):
 class WorkOrderList(LoginRequiredMixin, ListView):
     template_name = "workorder_list.html"
     model = WorkOrder
+    context_object_name = 'orders'
+    paginate_by = 10
+    queryset = WorkOrder.objects.all()
 
-    def get_context_data(self, **kwargs):
-        context = super(WorkOrderList, self).get_context_data(**kwargs)
-        context["orders"] = WorkOrder.objects.all()
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super(WorkOrderList, self).get_context_data(**kwargs)
+    #     context["orders"] = WorkOrder.objects.all()
+    #     return context
 
 
 class WorkOrderList1(LoginRequiredMixin, ListView):
