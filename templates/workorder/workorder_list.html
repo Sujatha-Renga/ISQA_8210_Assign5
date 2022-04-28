@@ -7,16 +7,14 @@
     <div style="max-width:100%; min-width: 850px" class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>
+
             {% if user.is_staff %}
-                <div>
-                    <ul class="nav navbar-nav navbar-right" style="float:right">
-                        <li><a class="btn btn-info" href="{% url 'create_workorder' %}">Create Order</a></li>
-                        &nbsp &nbsp
-                        <li><a class="btn btn-info" style="float:right" href="{% url 'view_pdf' %}">Export to PDF</a></li>
-                        <li><a class="btn btn-info" style="float:right" href="{% url 'export_filter_work' %}">Export to
-                            Excel</a></li>
-                    </ul>
-                </div>
+                <ul class="nav navbar-nav text" style="float:right">
+                    <li style="padding: 5px"><a class="btn btn-info" href="{% url 'create_workorder' %}">Create Order</a></li> &nbsp&nbsp
+                    <li style="padding: 5px"><a class="btn btn-info" style="float:right" href="{% url 'view_pdf' %}">Export to PDF</a></li>&nbsp&nbsp
+                    <li style="padding: 5px"><a class="btn btn-info" style="float:right" href="{% url 'export_filter_work' %}">Export to
+                        Excel</a></li>
+                </ul>
             {% endif %}
         </div>
         <div class="card-body">

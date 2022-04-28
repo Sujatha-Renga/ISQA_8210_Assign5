@@ -6,6 +6,8 @@
             <form class="form" method="post" action="{% url 'export_work_orders' %}">
                 {% csrf_token %}
                 {{ form | crispy }}
+                    <br>
+                    <br>
                   <button class="btn btn-success mt-3" >Generate Report</button>
             </form>
         </div>

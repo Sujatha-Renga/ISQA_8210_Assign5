@@ -36,7 +36,7 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="#aboutpage">Contact</a></li>
-                        <li><a href="#">Dashboard</a></li>
+                        <!--<li><a href="#">Dashboard</a></li>-->
                         {% if user.is_superuser %}
                             <li><a href="{% url 'workorder_list' %}">WorkOrder</a></li>
                         {% elif user.is_staff %}
