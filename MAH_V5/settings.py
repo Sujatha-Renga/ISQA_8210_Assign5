@@ -120,19 +120,24 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'user.ExtUser'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'workorder_list'
 LOGOUT_REDIRECT_URL = 'home'
 
 # LOGIN_URL = '/user/login/'
 
 
-LOGIN_REDIRECT_URL = '/'
+
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'studentscafe.omaha@gmail.com'
