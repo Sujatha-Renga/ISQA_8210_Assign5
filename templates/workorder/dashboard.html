@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+{#{% extends 'base.html' %}#}
+{% load static %}
+{% block content %}
+<html lang="en">
+    <head>
+
+        <!-- CSS style to put div side by side -->
+        <style type="text/css">
+        .container {
+            width:1000px;
+            height:250px;
+            background-color:white;
+            padding-top:20px;
+            {#padding-left:15px;#}
+            {#padding-right:15px;#}
+        }
+        #st-box {
+            float:left;
+            width:220px;
+            height:200px;
+            background-color:white;
+            border:solid black;
+        }
+        #nd-box {
+            float:left;
+            width:220px;
+            height:200px;
+            background-color:white;
+            border:solid black;
+            margin-left:20px;
+        }
+        #rd-box {
+            float:left;
+            width:220px;
+            height:200px;
+            background-color:white;
+            border:solid black;
+            margin-left:20px;
+        }
+        h1 {
+            color:Tan;
+        }
+        </style>
+    </head>
+
+    <body>
+        <center>
+        <h1>Work-Orders Overview</h1>
+
+        <div class="container">
+            <div id="st-box">
+        Number of current OPEN Work Orders: {{ open_wo_count }}
+            </div>
+
+            <div id="nd-box"><p></p><p></p>
+                <p>
+                    Number of Work Orders that need URGENT response: {{ severity_count }}
+                </p>
+            </div>
+
+            <div id="rd-box">
+Total Number of Work Orders in System: {{ total_wo }}
+            </div>
+                        <div id="rd-box">
+TILE D
+            </div>
+        </div>
+        </center>
+
+{% endblock %}
+</html>

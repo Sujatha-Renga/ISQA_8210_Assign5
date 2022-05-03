@@ -15,6 +15,9 @@ urlpatterns = [
     path('item/edit/<int:pk>/', UpdateWorkOrderItems.as_view(), name='item_update'),
     path('item/delete/<int:pk>/', DeleteWorkOrderItems.as_view(), name='item_delete'),
     path('export_work_orders/', views.export_work_orders, name='export_work_orders'),
+    path('export_PDFwork_orders/', views.export_PDFwork_orders, name='export_PDFwork_orders'),
     path('export_filter_work/', views.export_filter_work, name='export_filter_work'),
-    path('view_pdf', views.view_pdf, name='view_pdf')
+    path('export_PDFfilter_work/', views.export_PDFfilter_work, name='export_PDFfilter_work'),
+    path('dashboard/', views.dashboardView, name='dashboard'),
+    path('view_pdf', views.view_pdf, name='view_pdf'),
 ]

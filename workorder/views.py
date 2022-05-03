@@ -31,11 +31,22 @@ class DateInput(DateInput):
     input_type = 'date'
 
 
+def dashboardView(request):
+    open_wo_count = WorkOrder.objects.filter(status='OPEN').count()
+    severity_count = WorkOrder.objects.filter(severity='URGENT').count()
+    total_wo = WorkOrder.objects.all().count()
+    # print(open_wo_count)
+    return render(request, 'workorder/dashboard.html', {'open_wo_count': open_wo_count,
+                                                        'severity_count': severity_count,
+                                                        'total_wo': total_wo})
+    # return render(request, 'workorder/dashboard.html')
+
+
 class WorkOrderList(LoginRequiredMixin, ListView):
     template_name = "workorder_list.html"
     model = WorkOrder
     context_object_name = 'orders'
-    paginate_by = 10
+    paginate_by = 4
     queryset = WorkOrder.objects.all()
 
     # def get_context_data(self, **kwargs):
@@ -173,6 +184,67 @@ def export_work_orders(request):
     return response
 
 
+@staff_member_required
+def export_PDFfilter_work(request):
+    template_name = "workorder/workorderPDFfilter.html"
+    form_class = ExportFilterForms()
+    return render(request, template_name, {'form': form_class})
+
+
+@staff_member_required
+def export_PDFwork_orders(request):
+    buf = io.BytesIO()
+    c = canvas.Canvas(buf, pagesize=letter, bottomup=0)
+    textobj = c.beginText()
+    textobj.setTextOrigin(inch, inch)
+    textobj.setFont("Helvetica", 14)
+
+    form = ExportFilterForms(request.POST)
+
+    if form.is_valid():
+        cs_value = form.cleaned_data['status']
+        assigned_user = form.cleaned_data['user']
+        assigned_apartment = form.cleaned_data['property']
+
+    lines = []
+
+    if assigned_user and assigned_apartment is None:
+        wo_object = WorkOrder.objects.filter(status=cs_value)
+    elif assigned_apartment is None:
+        wo_object = WorkOrder.objects.filter(status=cs_value, user=assigned_user)
+    elif assigned_user is None:
+        wo_object = WorkOrder.objects.filter(status=cs_value, property=assigned_apartment)
+    else:
+        wo_object = WorkOrder.objects.filter(status=cs_value, user=assigned_user, property=assigned_apartment)
+
+    lines.append("Here is your generated Report!")
+    for order in wo_object:
+        # print(order.customer_name)
+        lines.append(" ")
+        lines.append("Work Order Name: " + "       " + str(order.workorder_name))
+        lines.append("Property: " + "              " + str(order.property))
+        lines.append("Apartment: " + "             " + str(order.apartment))
+        lines.append("Short Description: " + "     " + str(order.short_desc))
+        lines.append("Skill Set: " + "             " + str(order.skill_set))
+        lines.append("Severity: " + "              " + str(order.severity))
+        lines.append("Status: " + "                " + str(order.status))
+        lines.append("Promised Date: " + "         " + str(order.promised_date))
+        lines.append("Completed Date: " + "        " + str(order.completed_date))
+        lines.append("Estimated Cost: " + "        " + str(order.estimated_cost))
+        lines.append("Actual Cost: " + "           " + str(order.actual_cost))
+        lines.append("Work Order Date: " + "       " + str(order.work_order_date))
+
+    for line in lines:
+        textobj.textLine(line)
+
+    c.drawText(textobj)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf, as_attachment=True, filename='workorders.pdf')
+
+
 @login_required
 def view_pdf(request):
     buf = io.BytesIO()
@@ -214,3 +286,4 @@ def view_pdf(request):
     buf.seek(0)
 
     return FileResponse(buf, as_attachment=True, filename='report.pdf')
+

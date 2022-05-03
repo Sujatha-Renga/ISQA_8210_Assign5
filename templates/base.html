@@ -36,7 +36,8 @@
                     <ul class="nav navbar-nav">
                         <li><a href="{% url 'home' %}">Home</a></li>
                         <li><a href="#aboutpage">Contact</a></li>
-                        <!--<li><a href="#">Dashboard</a></li>-->
+                        <li><a href = "{% url 'dashboard' %}">Overview</a></li>
+
                         {% if user.is_superuser %}
                             <li><a href="{% url 'workorder_list' %}">WorkOrder</a></li>
                         {% elif user.is_staff %}
@@ -73,7 +74,7 @@
     {% endblock %}
     <a id="aboutpage">
     <footer class="mah-center mah-black mah-padding-16">
-        <div class="container">
+      <div class="container">
         <div class="row-flex">
             <div class="opening-time">
                 <h3>
@@ -100,23 +101,24 @@
         </div>
     </footer>
     </a>
-    {% block pagination %}
-        {% if is_paginated %}
-            <div class="pagination">
-            <span class="page-links">
-                {% if page_obj.has_previous %}
-                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-                <span class="page-current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-                {% if page_obj.has_next %}
-                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
-                {% endif %}
-            </span>
-            </div>
-        {% endif %}
-    {% endblock pagination %}
+{#    {% block pagination %}#}
+{#        {% if is_paginated %}#}
+{#            <div class="pagination">#}
+{#            <span class="page-links">#}
+{#                {% if page_obj.has_previous %}#}
+{#                    <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>#}
+{#                {% endif %}#}
+{#                <span class="page-current">#}
+{#                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.#}
+{#                </span>#}
+{#                {% if page_obj.has_next %}#}
+{#                    <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>#}
+{#                {% endif %}#}
+{#            </span>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endblock pagination %}#}
+
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
             integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
             crossorigin="anonymous"></script>
